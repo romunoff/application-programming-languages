@@ -20,10 +20,10 @@ while wrong_attempts_counter < total_attempts
   letter = STDIN.gets.chomp.encode('UTF-8')[0]
   puts ''
 
-  at_least_one_letter_was_guess guess = false
+  is_letter_exists = false
   hidden_word.split('').each_with_index do |i, index|
     if letter === i
-      at_least_one_letter_was_guess = true
+      is_letter_exists = true
       word_pattern[index] = i
     end
   end
@@ -31,7 +31,7 @@ while wrong_attempts_counter < total_attempts
   if word_pattern.gsub('_', '') === hidden_word.length
     puts 'You win!'
     break
-  elsif !at_least_one_letter_was_guess
+  elsif !is_letter_exists
     wrong_attempts_counter += 1
     if wrong_attempts_counter >= total_attempts
       puts 'You died!'
