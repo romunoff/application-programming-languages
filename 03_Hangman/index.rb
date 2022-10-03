@@ -13,18 +13,17 @@ while wrong_attempts_counter < total_attempts
   print 'Hidden word: '
   puts word_pattern
 
-  print 'Number of mistakes: '
-  puts wrong_attempts_counter
+  puts "Number of mistakes = #{wrong_attempts_counter}"
 
   print 'Enter letter: '
   letter = STDIN.gets.chomp.encode('UTF-8')[0]
   puts ''
 
   is_letter_exists = false
-  hidden_word.split('').each_with_index do |i, index|
-    if letter === i
+  hidden_word.split('').each_with_index do |hidden_letter, index|
+    if hidden_letter === letter
       is_letter_exists = true
-      word_pattern[index] = i
+      word_pattern[index] = hidden_letter
     end
   end
 
