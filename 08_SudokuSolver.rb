@@ -13,86 +13,86 @@ input = [[4,0,1,0],
          [0,0,3,0],
          [0,0,2,0]]
 
-def solve_sudoku(board)
-  size = 4
-  box_size = 2
+$size = 4
+$box_size = 2
 
-  find_empty = ->(board) {
-    (0..size - 1).each do |row|
-      (0..size - 1).each do |column|
-        if board[row][column] === 0
-          return [row, column]
-        end
+def find_empty(board)
+  (0..$size - 1).each do |row|
+    (0..$size - 1).each do |column|
+      if board[row][column] === 0
+        return [row, column]
       end
     end
+  end
 
-    return nil
-  }
+  nil
+end
 
-  validate = ->(number, position, board) {
-    row = position[0]
-    column = position[1]
+def validate(number, position, board)
+  row = position[0]
+  column = position[1]
 
-    # Check rows
-    (0..size - 1).each do |i|
-      if board[i][column] === number and i != row
+  # Check rows
+  (0..$size - 1).each do |i|
+    if board[i][column] === number and i != row
+      return false
+    end
+  end
+
+  # Check columns
+  (0..$size - 1).each do |i|
+    if board[row][i] === number and i != column
+      return false
+    end
+  end
+
+  # Check box
+  box_row = ((row / $box_size) * $box_size).floor
+  box_column = ((column / $box_size) * $box_size).floor
+  (box_row..box_row + $box_size - 1).each do |i|
+    (box_column..box_column + $box_size - 1).each do |j|
+      if board[i][j] === number and i != row and j != column
         return false
       end
     end
+  end
 
-    # Check columns
-    (0..size - 1).each do |i|
-      if board[row][i] === number and i != column
-        return false
-      end
-    end
+  true
+end
 
-    # Check box
-    box_row = ((row / box_size) * box_size).floor
-    box_column = ((column / box_size) * box_size).floor
-    (box_row..box_row + box_size - 1).each do |i|
-      (box_column..box_column + box_size - 1).each do |j|
-        if board[i][j] === number and i != row and j != column
-          return false
-        end
-      end
-    end
+def solve(board)
+  current_position = find_empty(board)
 
+  if current_position === nil
     return true
-  }
+  end
 
-  solve = ->() {
-    current_position = find_empty.call(board)
+  puts "------------------------------------------------------------------------------"
 
-    if current_position === nil
-      return true
-    end
+  (1..$size).each do |number|
+    is_valid = validate(number, current_position, board)
 
-    puts "------------------------------------------------------------------------------"
+    puts "[INFO]: Current position: #{current_position}\tCurrent number: #{number}\tIsValid: #{is_valid}"
 
-    (1..size).each do |number|
-      is_valid = validate.call(number, current_position, board)
+    if is_valid
+      x = current_position[0]
+      y = current_position[1]
 
-      puts "[INFO]: Current position: #{current_position}\tCurrent number: #{number}\tIsValid: #{is_valid}"
+      board[x][y] = number
 
-      if is_valid
-        x = current_position[0]
-        y = current_position[1]
-
-        board[x][y] = number
-
-        if solve.call
-          return true
-        end
-
-        board[x][y] = 0
+      if solve(board)
+        return true
       end
+
+      board[x][y] = 0
     end
+  end
 
-    return false
-  }
+  false
+end
 
-  solve.call
+def solve_sudoku(board)
+  solve(board)
 
   board
 end
